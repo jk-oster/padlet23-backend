@@ -12,9 +12,9 @@
 
 A simple padlet that allows users to create collections.
 
-Backend: https://padlet23.s2010456022.student.kwmhgb.at
-Backend: http://padlet23.s2010456022.student.kwmhgb.at
-API: http://padlet23.s2010456022.student.kwmhgb.at/api
+Backend: https://padlet.s2010456022.student.kwmhgb.at
+Backend: http://padlet.s2010456022.student.kwmhgb.at
+API: http://padlet.s2010456022.student.kwmhgb.at/api
 
 Open ssh connection to Hetzner:
 
