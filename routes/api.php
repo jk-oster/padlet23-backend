@@ -15,11 +15,7 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', static function (Request $request) {
-    return $request->user();
-});
-
-Route::get('/', static function (Request $request) {
+Route::get('', static function (Request $request) {
     return response()->json(['code' => 'seas']);
 });
 
@@ -30,4 +26,5 @@ Route::group(['middleware' => ['api', 'auth.jwt', 'auth.admin']], static functio
     Route::post('auth/logout', [AuthController::class, 'logout']);
     Route::get('auth/refresh', [AuthController::class, 'refresh']);
     Route::get('auth/me', [AuthController::class, 'me']);
+//    Route::get('auth/register', [AuthController::class, 'register']);
 });

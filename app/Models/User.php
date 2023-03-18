@@ -63,11 +63,19 @@ class User extends Authenticatable implements JWTSubject
     /* ---- relations ---- */
 
     /**
-     * user has many book (1:n)
+     * user has many padlets (1:n)
      * @return HasMany
      */
-    public function books() : \Illuminate\Database\Eloquent\Relations\HasMany
+    public function padlets() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Book::class);
+        return $this->hasMany(Padlet::class);
     }
+
+    public function isAdmin() : bool
+    {
+        return $this->role === 'admin';
+    }
+
+
+
 }
