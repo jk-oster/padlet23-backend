@@ -15,14 +15,18 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', static function (Request $request) {
     return $request->user();
+});
+
+Route::get('/', static function (Request $request) {
+    return response()->json(['code' => 'seas']);
 });
 
 Route::post('auth/login', [AuthController::class, 'login']);
 
 // methods which need authentication - JWT Token
-Route::group(['middleware' => ['api', 'auth.jwt', 'auth.admin']], function () {
+Route::group(['middleware' => ['api', 'auth.jwt', 'auth.admin']], static function () {
     Route::post('auth/logout', [AuthController::class, 'logout']);
     Route::get('auth/refresh', [AuthController::class, 'refresh']);
     Route::get('auth/me', [AuthController::class, 'me']);
