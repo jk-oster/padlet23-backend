@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,6 +12,8 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    public CONST PUBLIC_USER_ID = 1;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +35,8 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verified_at',
+        'role',
     ];
 
     /**
@@ -64,6 +68,26 @@ class User extends Authenticatable implements JWTSubject
     public function isAdmin() : bool
     {
         return $this->role === 'admin';
+    }
+
+    public function isOwner(Padlet $padlet) : bool
+    {
+        return $padlet->isOwner($this);
+    }
+
+    public function canView(Padlet $padlet) : bool
+    {
+        return $padlet->canView($this);
+    }
+
+    public function canComment(Padlet $padlet) : bool
+    {
+        return $padlet->canComment($this);
+    }
+
+    public function canEdit(Padlet $padlet) : bool
+    {
+        return $padlet->canEdit($this);
     }
 
     /* ---- relations ---- */
@@ -115,20 +139,5 @@ class User extends Authenticatable implements JWTSubject
     public function pendingPadletUser() : \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->padletUser()->where('accepted', false);
-    }
-
-    public function canView(Padlet $padlet) : bool
-    {
-        return $padlet->canView($this);
-    }
-
-    public function canComment(Padlet $padlet) : bool
-    {
-        return $padlet->canComment($this);
-    }
-
-    public function canEdit(Padlet $padlet) : bool
-    {
-        return $padlet->canEdit($this);
     }
 }

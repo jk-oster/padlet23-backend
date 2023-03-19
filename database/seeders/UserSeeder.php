@@ -33,6 +33,14 @@ class UserSeeder extends Seeder
     {
         $adminUsers = [
             [
+                'id' => \App\Models\User::PUBLIC_USER_ID,
+                'name' => 'anonymous',
+                'email' => 'anonymous@anonymous.xyz',
+                'password' => bcrypt('anonymous'),
+                'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
+                'role' => 'user',
+            ],
+            [
                 'name' => 'smdm-jakob',
                 'email' => 'jo@studiomitte.com',
                 'password' => bcrypt('2Nv3wmh8v^oVHh'),
