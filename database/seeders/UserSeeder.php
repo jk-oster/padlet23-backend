@@ -21,7 +21,9 @@ class UserSeeder extends Seeder
         \App\Models\User::factory(10)->create();
         \App\Models\User::factory()->create([
             'name' => 'Test User2',
+            'password' => bcrypt('awdawdawdawdaw'),
             'email' => 'test2@example.com',
+            'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
             'role' => 'user',
         ]);
 
@@ -34,12 +36,14 @@ class UserSeeder extends Seeder
                 'name' => 'smdm-jakob',
                 'email' => 'jo@studiomitte.com',
                 'password' => bcrypt('2Nv3wmh8v^oVHh'),
+                'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
                 'role' => 'admin',
             ],
             [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'password' => bcrypt('password'),
+                'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
                 'role' => 'admin',
             ],
         ];

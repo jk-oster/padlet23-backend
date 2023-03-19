@@ -22,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'avatar',
     ];
 
     /**
@@ -60,6 +61,11 @@ class User extends Authenticatable implements JWTSubject
         return ['user' => ['id' => $this->id]];
     }
 
+    public function isAdmin() : bool
+    {
+        return $this->role === 'admin';
+    }
+
     /* ---- relations ---- */
 
     /**
@@ -71,11 +77,58 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Padlet::class);
     }
 
-    public function isAdmin() : bool
+    /**
+     * user has many posts (1:n)
+     * @return HasMany
+     */
+    public function posts() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->role === 'admin';
+        return $this->hasMany(Post::class);
+    }
+
+    /**
+     * user has many padletUsers (1:n)
+     * @return BelongsToMany
+     */
+    public function padletUser() : \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Padlet::class)->withPivot('permission_level', 'accepted');
     }
 
 
+    public function sharedPadlets() : \Illuminate\Support\Collection
+    {
+        $padletUsers = $this->padletUser()->where('accepted', true);
+        return $padletUsers->get()->map(static function ($padletUser) {
+            return $padletUser->padlet;
+        });
+    }
 
+    public function pendingPadlets() : \Illuminate\Support\Collection
+    {
+        $padletUsers = $this->pendingPadletUser();
+        return $padletUsers->get()->map(static function ($padletUser) {
+            return $padletUser->padlet;
+        });
+    }
+
+    public function pendingPadletUser() : \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->padletUser()->where('accepted', false);
+    }
+
+    public function canView(Padlet $padlet) : bool
+    {
+        return $padlet->canView($this);
+    }
+
+    public function canComment(Padlet $padlet) : bool
+    {
+        return $padlet->canComment($this);
+    }
+
+    public function canEdit(Padlet $padlet) : bool
+    {
+        return $padlet->canEdit($this);
+    }
 }
