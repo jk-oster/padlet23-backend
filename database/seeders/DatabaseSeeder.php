@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $seederClasses = [
-
+            PadletSeeder::class,
+//            PostSeeder::class,
         ];
         if (App::Environment() == 'local') {
             $seederClasses = [

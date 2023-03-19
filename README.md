@@ -23,7 +23,7 @@ ssh sstud112@dedi50.your-server.de -p222
 ```
 
 ```bash
-cd public_html/padlet/padletServer
+cd public_html/padlet23/padletServer
 ```
 
 ## Installation
