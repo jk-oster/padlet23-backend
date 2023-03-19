@@ -35,4 +35,9 @@ class Post extends Model
     {
         return $this->user_id === $user->id;
     }
+
+    public function scopeByPadletId($query, $padletId) : \Illuminate\Database\Eloquent\Builder
+    {
+        return $query->where('padlet_id', $padletId);
+    }
 }

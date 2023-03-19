@@ -96,6 +96,29 @@ class Padlet extends Model
         return $this->public;
     }
 
+    public function isPrivate() : bool
+    {
+        return !$this->public;
+    }
+
+    public function scopeAccessiblePadlets($query, $user) : \Illuminate\Database\Eloquent\Builder
+    {
+        if ($user instanceof User) {
+
+            if ($user->isAdmin()) {
+                return $query;
+            }
+
+            return $query
+                ->where('public', true)
+                ->orWhere('user_id', $user->id)
+                ->orWhereHas('padletUser', function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->where('accepted', true);
+                });
+        }
+        return $query->where('public', true);
+    }
+
     public static function scopePublicPadlets($query) : \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('public', true);
