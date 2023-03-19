@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonRequest;
 use App\Models\Padlet;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class PadletController extends Controller
 {
@@ -18,7 +19,7 @@ class PadletController extends Controller
     {
         $user = auth()->user();
 
-        $publicPadlets = Padlet::accessiblePadlets($user)->with(['posts', 'padletUser'])->get();
+        $publicPadlets = Padlet::accessiblePadlets($user)->with(['padletUser'])->get();
 
         return response()->json($publicPadlets, 200);
     }
@@ -27,7 +28,7 @@ class PadletController extends Controller
     {
         $user = auth()->user();
 
-        $sharedPadlets = Padlet::sharedPadlets($user)->with(['posts'])->get();
+        $sharedPadlets = Padlet::sharedPadlets($user)->get();
 
         return response()->json($sharedPadlets, 200);
     }
@@ -35,6 +36,8 @@ class PadletController extends Controller
     public function sharePadlet(Request $request, int $id)
     {
         $padlet = Padlet::findOrFail($id);
+
+        Gate::authorize('admin', $padlet);
 
         $data = $request->all();
         // [
@@ -68,7 +71,7 @@ class PadletController extends Controller
     {
         $user = auth()->user();
 
-        $privatePadlets = Padlet::privatePadlets($user)->with(['posts'])->get();
+        $privatePadlets = Padlet::privatePadlets($user)->get();
 
         return response()->json($privatePadlets, 200);
     }
@@ -81,7 +84,6 @@ class PadletController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required',
             'cover' => 'nullable',
@@ -112,6 +114,7 @@ class PadletController extends Controller
     public function show($id)
     {
         $padlet = Padlet::findOrFail($id)->with(['posts', 'padletUser'])->get();
+        Gate::authorize('view', $padlet);
         return response()->json($padlet, 200);
     }
 
@@ -132,6 +135,7 @@ class PadletController extends Controller
         ]);
 
         $padlet = Padlet::findOrFail($id);
+        Gate::authorize('admin', $padlet);
         $padlet->update($request->all());
         return response()->json($padlet, 200);
     }
@@ -145,6 +149,7 @@ class PadletController extends Controller
     public function destroy($id)
     {
         $padlet = Padlet::findOrFail($id);
+        Gate::authorize('admin', $padlet);
         if ($padlet) {
             $padlet->delete();
             return response()->json('padlet (' . $id . ') successfully deleted', 200);

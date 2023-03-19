@@ -55,30 +55,6 @@ class Padlet extends Model
         return $this->padletUser()->where('accepted', false);
     }
 
-    public function canEdit(User $user) : bool
-    {
-        return $this->isPublic() || $this->isOwner($user) || $this->acceptedPadletUsers()
-            ->where('user_id', $user->id)
-            ->where('permission_level', '>=', self::PERMISSION_LEVELS['edit'])
-            ->exists();
-    }
-
-    public function canComment(User $user) : bool
-    {
-        return $this->isPublic() || $this->isOwner($user) || $this->acceptedPadletUsers()
-            ->where('user_id', $user->id)
-            ->where('permission_level', '>=', self::PERMISSION_LEVELS['comment'])
-            ->exists();
-    }
-
-    public function canView(User $user) : bool
-    {
-        return $this->isPublic() || $this->isOwner($user) || $this->acceptedPadletUsers()
-            ->where('user_id', $user->id)
-            ->where('permission_level', '>=', self::PERMISSION_LEVELS['view'])
-            ->exists();
-    }
-
     public function isOwner(User $user) : bool
     {
         return $this->user_id === $user->id;

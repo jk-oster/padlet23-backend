@@ -31,15 +31,15 @@ Route::group(['middleware' => ['api', 'auth.jwt', 'auth.admin']], static functio
 //    Route::get('auth/register', [AuthController::class, 'register']);
     Route::get('shared/padlet', [PadletController::class, 'getSharedPadlets']);
     Route::get('private/padlet', [PadletController::class, 'getPrivatePadlets']);
+    Route::post('padlet/{id}/share', [PadletController::class, 'sharePadlet']);
 });
 
 Route::get('padlet', [PadletController::class, 'index']);
 Route::get('padlet/{id}', [PadletController::class, 'show']);
 Route::post('padlet', [PadletController::class, 'store']);
 Route::put('padlet/{id}', [PadletController::class, 'update']);
-Route::delete('padlet/{id}', [PadletController::class, 'destroy']);
-Route::post('padlet/{id}/share', [PadletController::class, 'sharePadlet']);
 Route::get('search/padlet/{search}', [PadletController::class, 'search']);
+Route::delete('padlet/{id}', [PadletController::class, 'destroy']);
 
 Route::get('padlet/{id}/post', [PostController::class, 'getPostsByPadletId']);
 Route::get('post/{id}', [PostController::class, 'show']);

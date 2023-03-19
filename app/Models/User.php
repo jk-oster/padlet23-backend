@@ -70,26 +70,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->role === 'admin';
     }
 
-    public function isOwner(Padlet $padlet) : bool
-    {
-        return $padlet->isOwner($this);
-    }
-
-    public function canView(Padlet $padlet) : bool
-    {
-        return $padlet->canView($this);
-    }
-
-    public function canComment(Padlet $padlet) : bool
-    {
-        return $padlet->canComment($this);
-    }
-
-    public function canEdit(Padlet $padlet) : bool
-    {
-        return $padlet->canEdit($this);
-    }
-
     /* ---- relations ---- */
 
     /**

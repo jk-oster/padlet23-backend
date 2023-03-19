@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Padlet;
 use App\Models\Post;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -19,6 +21,8 @@ class PostController extends Controller
 
     public function getPostsByPadletId(int $padletId)
     {
+        $padlet = Padlet::findOrFail($padletId);
+        Gate::authorize('view', $padlet);
         $posts = Post::byPadletId($padletId)->get();
         return response()->json($posts, 200);
     }
@@ -39,6 +43,9 @@ class PostController extends Controller
         $user = auth()->user();
         $userId = $user ? $user->id : \App\Models\User::PUBLIC_USER_ID;
 
+        $padlet = Padlet::findOrFail($request->padlet_id);
+        Gate::authorize('edit', $padlet);
+
         $post = new Post();
         $post->user_id = $userId;
         $post->padlet_id = $request->padlet_id;
@@ -57,6 +64,7 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::findOrFail($id);
+        Gate::authorize('view', $post->padlet);
         return response()->json($post, 200);
     }
 
@@ -68,13 +76,14 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-//        $request->validate([
-//            'name' => 'required',
-//            'cover' => 'nullable',
-//            'public' => 'nullable|boolean',
-//        ]);
+        $request->validate([
+            'name' => 'required',
+            'cover' => 'nullable',
+            'public' => 'nullable|boolean',
+        ]);
 
         $post = Post::findOrFail($id);
+        Gate::authorize('edit', $post->padlet);
         $post->update($request->all());
         return response()->json($post, 200);
     }
@@ -87,6 +96,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+        Gate::authorize('admin', $post->padlet);
         if ($post) {
             $post->delete();
             return response()->json('post (' . $id . ') successfully deleted', 200);
