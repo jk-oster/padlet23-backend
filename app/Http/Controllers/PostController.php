@@ -40,8 +40,7 @@ class PostController extends Controller
             'cover' => 'nullable',
         ]);
 
-        $user = auth()->user();
-        $userId = $user ? $user->id : \App\Models\User::PUBLIC_USER_ID;
+        $userId = \App\Models\User::getUserIdOrPublic();
 
         $padlet = Padlet::findOrFail($request->padlet_id);
         Gate::authorize('edit', $padlet);
@@ -63,7 +62,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::findOrFail($id)->with(['comments', 'ratings']);
         Gate::authorize('view', $post->padlet);
         return response()->json($post, 200);
     }
@@ -96,11 +95,9 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
-        Gate::authorize('admin', $post->padlet);
-        if ($post) {
-            $post->delete();
-            return response()->json('post (' . $id . ') successfully deleted', 200);
-        }
+        Gate::authorize('edit', $post->padlet);
+        $post->delete();
+        return response()->json('post (' . $id . ') successfully deleted', 200);
     }
 
     // search function which searches the post by user and text

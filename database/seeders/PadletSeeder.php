@@ -18,6 +18,10 @@ class PadletSeeder extends Seeder
 
         \App\Models\Post::factory(10)->create();
 
+//        \App\Models\Rating::factory(10)->create();
+
+        \App\Models\Comment::factory(10)->create();
+
         \Illuminate\Support\Facades\DB::table('padlet_user')->insert([
             'accepted' => true,
             'permission_level' => 1,

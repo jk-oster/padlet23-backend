@@ -91,7 +91,7 @@ class PadletController extends Controller
         ]);
 
         $user = auth()->user();
-        $userId = $user ? $user->id : User::PUBLIC_USER_ID;
+        $userId = User::getUserIdOrPublic();
         if (!$user) {
             $request->public = true;
         }
@@ -150,10 +150,8 @@ class PadletController extends Controller
     {
         $padlet = Padlet::findOrFail($id);
         Gate::authorize('admin', $padlet);
-        if ($padlet) {
-            $padlet->delete();
-            return response()->json('padlet (' . $id . ') successfully deleted', 200);
-        }
+        $padlet->delete();
+        return response()->json('padlet (' . $id . ') successfully deleted', 200);
     }
 
     // a search function that searches for users and padlet text
