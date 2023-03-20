@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Post extends Model
 {
     use HasFactory;
@@ -29,6 +30,22 @@ class Post extends Model
     public function padlet() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Padlet::class);
+    }
+
+    /**
+     * post has many ratings (1:n)
+     */
+    public function ratings() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    /**
+     * post has many comments (1:n)
+     */
+    public function comments() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 
     public function isOwner(User $user) : bool

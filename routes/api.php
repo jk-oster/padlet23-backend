@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PadletController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\RatingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,3 +50,13 @@ Route::put('post/{id}', [PostController::class, 'update']);
 Route::delete('post/{id}', [PostController::class, 'destroy']);
 Route::get('search/padlet/{padletId}/post/{search}', [PostController::class, 'search']);
 
+Route::get('post/{id}/comment', [CommentController::class, 'getCommentsByPostId']);
+Route::post('comment', [CommentController::class, 'store']);
+Route::put('comment/{id}', [CommentController::class, 'update']);
+Route::delete('comment/{id}', [CommentController::class, 'destroy']);
+Route::get('search/post/{postId}/comment/{search}', [CommentController::class, 'search']);
+
+Route::get('post/{id}/rating', [RatingController::class, 'getRatingsByPostId']);
+Route::post('rating', [RatingController::class, 'store']);
+Route::put('rating/{id}', [RatingController::class, 'update']);
+Route::delete('rating/{id}', [RatingController::class, 'destroy']);
