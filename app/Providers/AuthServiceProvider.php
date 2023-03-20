@@ -72,5 +72,14 @@ class AuthServiceProvider extends ServiceProvider
             }
             return $padlet->isPublic();
         });
+
+        // Gates that defines that a user can only delete his own comments & ratings
+        Gate::define('edit-delete-comment', static function (?User $user, Padlet $padlet, Comment $comment) {
+            return $padlet->isPublic() || ($user && $user->id === $comment->user_id);
+        });
+
+        Gate::define('edit-delete-rating', static function (?User $user, Padlet $padlet, Rating $rating) {
+            return $padlet->isPublic() || ($user && $user->id === $rating->user_id);
+        });
     }
 }

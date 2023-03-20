@@ -70,6 +70,17 @@ class User extends Authenticatable implements JWTSubject
         return $this->role === 'admin';
     }
 
+    public function isPublicUser() : bool
+    {
+        return $this->id === self::PUBLIC_USER_ID;
+    }
+
+    public static function getUserIdOrPublic() : int
+    {
+        $user = auth()->user();
+        return $user ? $user->id : self::PUBLIC_USER_ID;
+    }
+
     /* ---- relations ---- */
 
     /**
@@ -88,6 +99,24 @@ class User extends Authenticatable implements JWTSubject
     public function posts() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    /**
+     * user has many comments (1:n)
+     * @return HasMany
+     */
+    public function comments() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * user has many ratings (1:n)
+     * @return HasMany
+     */
+    public function ratings() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Rating::class);
     }
 
     /**
