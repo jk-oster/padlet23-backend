@@ -14,7 +14,7 @@ class RatingController extends Controller
     {
         $post = Post::findOrFail($id);
         Gate::authorize('view', $post->padlet);
-        return response()->json($post->ratings, 200);
+        return response()->json($post->ratings()->get(), 200);
     }
 
     /**
@@ -61,7 +61,7 @@ class RatingController extends Controller
         $rating = Rating::findOrFail($id);
         $padlet = $rating->post->padlet;
         Gate::authorize('view', $padlet);
-        Gate::authorize('edit-delete-comment', $padlet, $rating);
+        Gate::authorize('edit-delete-rating', $padlet, $rating);
 
 
         $rating->update(['rating' => $request->rating]);
@@ -80,7 +80,7 @@ class RatingController extends Controller
         $rating = Rating::findOrFail($id);
         $padlet = $rating->post->padlet;
         Gate::authorize('view', $padlet);
-        Gate::authorize('edit-delete-comment', $padlet, $rating);
+        Gate::authorize('edit-delete-rating', $padlet, $rating);
          $rating->delete();
          return response()->json('rating (' . $id . ') successfully deleted', 200);
     }

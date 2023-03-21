@@ -16,7 +16,7 @@ class CommentController extends Controller
     {
         $post = Post::findOrFail($id);
         Gate::authorize('view', $post->padlet);
-        return response()->json($post->comments, 200);
+        return response()->json($post->comments()->get(), 200);
     }
 
     /**
@@ -68,7 +68,7 @@ class CommentController extends Controller
         ]);
 
         $comment = Comment::findOrFail($id);
-        $padlet = $comment->post->padlet;
+        $padlet = $comment->post()->padlet();
         Gate::authorize('comment', $padlet);
         Gate::authorize('edit-delete-comment', $padlet, $comment);
 
@@ -86,7 +86,7 @@ class CommentController extends Controller
     public function destroy($id)
     {
         $comment = Comment::findOrFail($id);
-        $padlet = $comment->post->padlet;
+        $padlet = $comment->post()->padlet();
         Gate::authorize('comment', $padlet);
         Gate::authorize('edit-delete-comment', $padlet, $comment);
         $comment->delete();

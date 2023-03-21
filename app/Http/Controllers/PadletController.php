@@ -24,6 +24,15 @@ class PadletController extends Controller
         return response()->json($publicPadlets, 200);
     }
 
+    // get padlet_users by padlet id
+    public function getPadletUsersByPadletId(int $padletId)
+    {
+        $padlet = Padlet::findOrFail($padletId);
+        Gate::authorize('view', $padlet);
+        $padletUsers = $padlet->padletUser()->get();
+        return response()->json($padletUsers, 200);
+    }
+
     public function getSharedPadlets()
     {
         $user = auth()->user();
@@ -113,7 +122,7 @@ class PadletController extends Controller
      */
     public function show($id)
     {
-        $padlet = Padlet::findOrFail($id)->with(['posts', 'padletUser'])->get();
+        $padlet = Padlet::with(['posts', 'padletUser', 'user'])->findOrFail($id);
         Gate::authorize('view', $padlet);
         return response()->json($padlet, 200);
     }

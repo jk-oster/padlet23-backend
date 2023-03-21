@@ -32,6 +32,7 @@ Route::group(['middleware' => ['api', 'auth.jwt', 'auth.admin']], static functio
     Route::get('auth/me', [AuthController::class, 'me']);
 //    Route::get('auth/register', [AuthController::class, 'register']);
     Route::get('shared/padlet', [PadletController::class, 'getSharedPadlets']);
+    Route::get('user/padlet/{id}', [PadletController::class, 'getPadletUsersByPadletId']);
     Route::get('private/padlet', [PadletController::class, 'getPrivatePadlets']);
     Route::post('padlet/{id}/share', [PadletController::class, 'sharePadlet']);
 });

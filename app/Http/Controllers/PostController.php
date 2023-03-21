@@ -62,7 +62,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::findOrFail($id)->with(['comments', 'ratings']);
+        $post = Post::with(['comments', 'ratings', 'padlet', 'user'])->findOrFail($id);
         Gate::authorize('view', $post->padlet);
         return response()->json($post, 200);
     }
