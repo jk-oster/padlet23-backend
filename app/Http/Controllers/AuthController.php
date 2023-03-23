@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,6 +42,12 @@ class AuthController extends Controller
     {
         return response()->json(auth()->user());
     }
+
+    public function search($searchTerm)
+    {
+        return response()->json(User::where('text', 'like', '%' . $searchTerm . '%')->get());
+    }
+
     /**
      * Log the user out (Invalidate the token).
      *

@@ -26,8 +26,7 @@ Route::get('', static function (Request $request) {
 Route::post('auth/login', [AuthController::class, 'login']);
 
 // methods which need authentication - JWT Token
-Route::group(['middleware' => ['api', 'auth.jwt', 'auth.admin']], static function () {
-    Route::post('auth/logout', [AuthController::class, 'logout']);
+Route::group(['middleware' => ['api', 'auth.jwt']], static function () {
     Route::get('auth/refresh', [AuthController::class, 'refresh']);
     Route::get('auth/me', [AuthController::class, 'me']);
 //    Route::get('auth/register', [AuthController::class, 'register']);
@@ -35,7 +34,11 @@ Route::group(['middleware' => ['api', 'auth.jwt', 'auth.admin']], static functio
     Route::get('user/padlet/{id}', [PadletController::class, 'getPadletUsersByPadletId']);
     Route::get('private/padlet', [PadletController::class, 'getPrivatePadlets']);
     Route::post('padlet/{id}/share', [PadletController::class, 'sharePadlet']);
+    Route::put('padlet/{id}/toggle', [PadletController::class, 'toggle']);
+    Route::get('search/user/{searchTerm}', [AuthController::class, 'search']);
 });
+
+Route::post('auth/logout', [AuthController::class, 'logout']);
 
 Route::get('padlet', [PadletController::class, 'index']);
 Route::get('padlet/{id}', [PadletController::class, 'show']);
