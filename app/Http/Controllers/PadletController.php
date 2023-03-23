@@ -67,7 +67,7 @@ class PadletController extends Controller
         // ]
 
         $mappedSharedUserData = array_map(static function ($value) {
-            return [ 'permission_level' => $value];
+            return ['permission_level' => $value];
         }, $coloumn);
         // [1 => ['permission_level' => 1], 2 => ['permission_level' => 2]];
 
@@ -176,5 +176,12 @@ class PadletController extends Controller
             ->get();
 
         return response()->json($padlets, 200);
+    }
+
+    public function toggle($id)
+    {
+        $padlet = Padlet::findOrFail($id);
+        Gate::authorize('admin', $padlet);
+        $padlet->update(['public' => !$padlet->public]);
     }
 }

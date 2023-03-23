@@ -22,31 +22,34 @@ class PadletSeeder extends Seeder
 
         \App\Models\Comment::factory(10)->create();
 
-        \Illuminate\Support\Facades\DB::table('padlet_user')->insert([
-            'accepted' => true,
-            'permission_level' => 1,
-            'padlet_id' => 1,
-            'user_id' => 2,
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s")
-        ]);
+        // loop from 1 to 10 in a for
+        for ($i = 1; $i < 10; $i++) {
+            \Illuminate\Support\Facades\DB::table('padlet_user')->insert([
+                'accepted' => true,
+                'permission_level' => 1,
+                'padlet_id' => $i,
+                'user_id' => 2,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+            ]);
 
-        \Illuminate\Support\Facades\DB::table('padlet_user')->insert([
-            'accepted' => true,
-            'permission_level' => 2,
-            'padlet_id' => 1,
-            'user_id' => 3,
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s")
-        ]);
+            \Illuminate\Support\Facades\DB::table('padlet_user')->insert([
+                'accepted' => true,
+                'permission_level' => 2,
+                'padlet_id' => $i,
+                'user_id' => 3,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+            ]);
 
-        \Illuminate\Support\Facades\DB::table('padlet_user')->insert([
-            'accepted' => true,
-            'permission_level' => 3,
-            'padlet_id' => 1,
-            'user_id' => 4,
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s")
-        ]);
+            \Illuminate\Support\Facades\DB::table('padlet_user')->insert([
+                'accepted' => true,
+                'permission_level' => 3,
+                'padlet_id' => $i,
+                'user_id' => 4,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+            ]);
+        }
     }
 }
