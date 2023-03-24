@@ -69,7 +69,7 @@ class AuthServiceProvider extends ServiceProvider
 
     protected static function hasPermission(int $permissionLevel, Padlet $padlet, ?User $user) {
         if (!$padlet->isPublic() && $user) {
-            return self::permissionLevelHigherThan($permissionLevel, $padlet, $user);
+            return $padlet->isOwner($user) || self::permissionLevelHigherThan($permissionLevel, $padlet, $user);
         }
         return $padlet->isPublic();
     }
