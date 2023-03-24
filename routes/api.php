@@ -7,6 +7,7 @@ use App\Http\Controllers\PadletController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\UnsplashController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ Route::group(['middleware' => ['api', 'auth.jwt']], static function () {
     Route::put('padlet/{id}/toggle', [PadletController::class, 'toggle']);
     Route::get('search/user/{searchTerm}', [AuthController::class, 'search']);
 });
+Route::get('search/image/{searchTerm}', [UnsplashController::class, 'search']);
 
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
