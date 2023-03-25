@@ -22,10 +22,16 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request) : \Illuminate\Http\JsonResponse
     {
+        // Check if the honeypot field is empty
+        if (!empty($request->input('name'))) {
+            abort(403, 'Spam detected');
+        }
+
+
+
         $credentials = request(['email', 'password']);
-//        dd($credentials);
         $token = auth()->attempt($credentials);
         if (!$token) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -38,12 +44,12 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
+    public function me() : \Illuminate\Http\JsonResponse
     {
         return response()->json(auth()->user());
     }
 
-    public function search($searchTerm)
+    public function search($searchTerm) : \Illuminate\Http\JsonResponse
     {
         $possibleUsers = User::where('name', 'like', '%' . $searchTerm . '%')->get();
         return response()->json($possibleUsers, 200);
@@ -54,7 +60,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout() : \Illuminate\Http\JsonResponse
     {
         auth()->logout();
         return response()->json(['message' => 'Successfully logged out']);
@@ -64,7 +70,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
+    public function refresh() : \Illuminate\Http\JsonResponse
     {
         return $this->respondWithToken(auth()->refresh());
     }
@@ -76,12 +82,34 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token) : \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+    public function register(Request $request) : \Illuminate\Http\JsonResponse
+    {
+        // Check if the honeypot field is empty
+        if (!empty($request->input('email_confirmation'))) {
+            abort(403, 'Spam detected');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $user = User::create([
+            'name' => $validated->name,
+            'email' => $validated->email,
+            'password' => bcrypt($validated->password),
+        ]);
+        $token = auth()->login($user);
+        return $this->respondWithToken($token);
     }
 }
