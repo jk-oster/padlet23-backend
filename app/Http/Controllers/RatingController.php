@@ -20,7 +20,7 @@ class RatingController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -35,34 +35,41 @@ class RatingController extends Controller
 
         $userId = \App\Models\User::getUserIdOrPublic();
 
-        $comment = new Comment();
-        $comment->text = $request->text;
-        $comment->user_id = $userId;
-        $comment->post_id = $request->post_id;
-        $comment->save();
-        return response()->json($comment, 201);
+        $rating = Rating::byPostId($request->post_id)->first();
+        if (!$rating) {
+            $rating = new Rating();
+            $rating->post_id = $request->post_id;
+            $rating->user_id = $userId;
+        }
+        $rating->rating = $request->rating;
+        $rating->save();
+        return response()->json($rating, 201);
     }
-
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Rating  $rating
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Rating $rating
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $postId)
     {
         $request->validate([
             'rating' => 'required',
         ]);
 
-        $rating = Rating::findOrFail($id);
+        $rating = Rating::byPostId($postId)->first();
+        return response()->json($rating, 200);
+
+        if (!$rating) {
+            return response()->json(['error' => 'rating not found'], 404);
+        }
+
         $padlet = $rating->post->padlet;
         Gate::authorize('view', $padlet);
-        Gate::authorize('edit-delete-rating', $padlet, $rating);
-
+//        Gate::authorize('edit-delete-rating', $padlet, $rating);
 
         $rating->update(['rating' => $request->rating]);
 
@@ -72,16 +79,16 @@ class RatingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Rating  $rating
+     * @param \App\Models\Rating $rating
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($postId)
     {
-        $rating = Rating::findOrFail($id);
+        $rating = Rating::byPostId($postId)->first();
         $padlet = $rating->post->padlet;
         Gate::authorize('view', $padlet);
-        Gate::authorize('edit-delete-rating', $padlet, $rating);
-         $rating->delete();
-         return response()->json('rating (' . $id . ') successfully deleted', 200);
+//        Gate::authorize('edit-delete-rating', $padlet, $rating);
+        $rating->delete();
+        return response()->json('rating (' . $postId . ') successfully deleted', 200);
     }
 }

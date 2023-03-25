@@ -14,12 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ratings', function (Blueprint $table) {
+            $table->id();
             $table->integer('rating')->default(0);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
             $table->timestamps();
 
-            $table->primary(['post_id', 'user_id']);
+            $table->unique(['user_id', 'post_id']);
         });
     }
 

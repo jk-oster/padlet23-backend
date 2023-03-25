@@ -25,4 +25,11 @@ class Rating extends Model
     {
         return $this->belongsTo(Post::class);
     }
+
+    public function scopeByPostId($query, $postId) : \Illuminate\Database\Eloquent\Builder
+    {
+        $userId = \App\Models\User::getUserIdOrPublic();
+        return $query->where('post_id', $postId)
+            ->where('user_id', $userId);
+    }
 }
