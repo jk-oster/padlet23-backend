@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonRequest;
 use App\Models\Padlet;
 use App\Models\User;
+use App\Models\Post;
 use Illuminate\Support\Facades\Gate;
 
 class PadletController extends Controller
@@ -85,6 +86,29 @@ class PadletController extends Controller
         return response()->json($privatePadlets, 200);
     }
 
+    public function acceptPadlet(int $id)
+    {
+        $user = auth()->user();
+        $padlet = Padlet::findOrFail($id);
+        $padlet->padletUser()->updateExistingPivot($user->id, ['accepted' => true]);
+        return response()->json($user->padletUser()->where('padlet_id', $padlet->id)->first(), 200);
+    }
+
+    public function declinePadlet(int $id)
+    {
+        $user = auth()->user();
+        $padlet = Padlet::findOrFail($id);
+        $padlet->padletUser()->detach($user->id);
+        return response()->json($padlet->padletUser()->get(), 200);
+    }
+
+    public function getPadletUsers()
+    {
+        $user = auth()->user();
+        $padletUsers = $user->padletUser()->get();
+        return response()->json($padletUsers, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -94,8 +118,8 @@ class PadletController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'cover' => 'nullable',
+            'name' => 'required|string',
+            'cover' => 'nullable|string',
             'public' => 'nullable|boolean',
         ]);
 
@@ -138,8 +162,8 @@ class PadletController extends Controller
     {
 
         $request->validate([
-            'name' => 'required',
-            'cover' => 'nullable',
+            'name' => 'required|string',
+            'cover' => 'nullable|string',
             'public' => 'nullable|boolean',
         ]);
 
@@ -159,6 +183,7 @@ class PadletController extends Controller
     {
         $padlet = Padlet::findOrFail($id);
         Gate::authorize('admin', $padlet);
+        Post::where('padlet_id', $id)->delete();
         $padlet->delete();
         return response()->json('padlet (' . $id . ') successfully deleted', 200);
     }
