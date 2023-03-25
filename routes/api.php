@@ -64,5 +64,5 @@ Route::get('search/post/{postId}/comment/{search}', [CommentController::class, '
 
 Route::get('post/{id}/rating', [RatingController::class, 'getRatingsByPostId']);
 Route::post('rating', [RatingController::class, 'store']);
-Route::put('rating/{id}', [RatingController::class, 'update']);
-Route::delete('rating/{id}', [RatingController::class, 'destroy']);
+Route::put('rating/{postId}', [RatingController::class, 'update']);
+Route::delete('rating/{postId}', [RatingController::class, 'destroy']);
