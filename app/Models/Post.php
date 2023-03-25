@@ -16,6 +16,8 @@ class Post extends Model
         'padlet_id',
     ];
 
+    protected $appends = ['rating', 'ratings_count', 'comments_count', 'user_rating'];
+
     /**
      * post belongs to one user (n:1)
      */
@@ -57,4 +59,32 @@ class Post extends Model
     {
         return $query->where('padlet_id', $padletId);
     }
+
+    public function getRatingAttribute() : int
+    {
+        return $this->ratings()->sum('rating') ?? 0;
+    }
+
+    public function getRatingsCountAttribute() : int
+    {
+        return $this->ratings()->count() ?? 0;
+    }
+
+    public function getCommentsCountAttribute() : int
+    {
+        return $this->comments()->count() ?? 0;
+    }
+
+    public function getUserRatingAttribute() : int
+    {
+        $user = auth()->user();
+        if ($user) {
+            $rating = $this->ratings()->where('user_id', $user->id)->first();
+            if ($rating) {
+                return $rating->rating;
+            }
+        }
+        return 0;
+    }
+
 }

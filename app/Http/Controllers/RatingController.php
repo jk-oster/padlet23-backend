@@ -25,25 +25,26 @@ class RatingController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'rating' => 'required',
-            'post_id' => 'required',
+        $validated = $request->validate([
+            'rating' => 'required|numeric',
+            'post_id' => 'required|numeric',
         ]);
 
-        $padlet = Post::findOrFail($request->post_id)->padlet;
+        $post = Post::findOrFail($validated['post_id']);
+        $padlet = $post->padlet;
         Gate::authorize('view', $padlet);
 
         $userId = \App\Models\User::getUserIdOrPublic();
 
-        $rating = Rating::byPostId($request->post_id)->first();
+        $rating = Rating::byPostId($validated['post_id'])->first();
         if (!$rating) {
             $rating = new Rating();
-            $rating->post_id = $request->post_id;
+            $rating->post_id = $validated['post_id'];
             $rating->user_id = $userId;
         }
-        $rating->rating = $request->rating;
+        $rating->rating = $validated['rating'];
         $rating->save();
-        return response()->json($rating, 201);
+        return response()->json($post, 201);
     }
 
 
@@ -54,41 +55,38 @@ class RatingController extends Controller
      * @param \App\Models\Rating $rating
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $postId)
+    public function update(Request $request, $ratingId)
     {
-        $request->validate([
-            'rating' => 'required',
+        $validated = $request->validate([
+            'rating' => 'required|numeric',
         ]);
 
-        $rating = Rating::byPostId($postId)->first();
-        return response()->json($rating, 200);
-
-        if (!$rating) {
-            return response()->json(['error' => 'rating not found'], 404);
-        }
-
-        $padlet = $rating->post->padlet;
+        $rating = Rating::findOrFail($ratingId);
+        $post = $rating->post;
+        $padlet = $post->padlet;
         Gate::authorize('view', $padlet);
 //        Gate::authorize('edit-delete-rating', $padlet, $rating);
 
-        $rating->update(['rating' => $request->rating]);
+        $rating->update(['rating' => $validated['rating']]);
 
-        return response()->json($rating, 200);
+        return response()->json($post, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param \App\Models\Rating $rating
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($postId)
+    public function destroy($postId): \Illuminate\Http\JsonResponse
     {
         $rating = Rating::byPostId($postId)->first();
-        $padlet = $rating->post->padlet;
+        $post = $rating->post;
+        $padlet = $post->padlet;
         Gate::authorize('view', $padlet);
 //        Gate::authorize('edit-delete-rating', $padlet, $rating);
         $rating->delete();
-        return response()->json('rating (' . $postId . ') successfully deleted', 200);
+
+        return response()->json($post, 200);
     }
 }
