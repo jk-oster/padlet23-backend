@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
             'name' => 'Test User2',
             'password' => bcrypt('awdawdawdawdaw'),
             'email' => 'test2@example.com',
-            'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
+            'avatar' => 'https://i.pravatar.cc/150?u=test2@example.com',
             'role' => 'user',
         ]);
 
@@ -37,21 +37,21 @@ class UserSeeder extends Seeder
                 'name' => 'anonymous',
                 'email' => 'anonymous@anonymous.xyz',
                 'password' => bcrypt('anonymous'),
-                'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
+                'avatar' => 'https://i.pravatar.cc/150?u=anonymous@anonymous.xyz',
                 'role' => 'user',
             ],
             [
                 'name' => 'smdm-jakob',
                 'email' => 'jo@studiomitte.com',
                 'password' => bcrypt('2Nv3wmh8v^oVHh'),
-                'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
+                'avatar' => 'https://i.pravatar.cc/150?u=1010118',
                 'role' => 'admin',
             ],
             [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'password' => bcrypt('password'),
-                'avatar' => 'https://avatars.githubusercontent.com/u/1010118?v=4',
+                'avatar' => 'https://i.pravatar.cc/150?u=test@example.com',
                 'role' => 'admin',
             ],
         ];

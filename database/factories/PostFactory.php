@@ -17,7 +17,7 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            'content' => fake()->name(),
+            'content' => fake()->sentence(),
             'cover' => fake()->imageUrl(),
             'user_id' => fake()->randomDigitNotNull(),
             'padlet_id' => fake()->randomDigitNotNull(),
