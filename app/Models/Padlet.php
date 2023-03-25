@@ -21,6 +21,9 @@ class Padlet extends Model
         'user_id',
     ];
 
+    protected $appends = ['posts_count'];
+
+
     /**
      * padlet belongs to one user (n:1)
      */
@@ -110,5 +113,10 @@ class Padlet extends Model
     public static function scopePrivatePadlets($query, User $user) : \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('public', false)->where('user_id', $user->id);
+    }
+
+    public function getPostsCountAttribute() : int
+    {
+        return $this->posts()->count();
     }
 }
