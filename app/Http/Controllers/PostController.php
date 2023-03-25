@@ -35,9 +35,9 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'required',
-            'padlet_id' => 'required',
-            'cover' => 'nullable',
+            'content' => 'required|string',
+            'padlet_id' => 'required|numeric',
+            'cover' => 'nullable|string',
         ]);
 
         $userId = \App\Models\User::getUserIdOrPublic();
@@ -62,7 +62,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with(['comments', 'ratings', 'padlet', 'user'])->findOrFail($id);
+        $post = Post::with(['comments', 'padlet', 'user'])->findOrFail($id);
         Gate::authorize('view', $post->padlet);
         return response()->json($post, 200);
     }
@@ -76,8 +76,8 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
-            'cover' => 'nullable',
+            'name' => 'required|string',
+            'cover' => 'nullable|string',
             'public' => 'nullable|boolean',
         ]);
 
