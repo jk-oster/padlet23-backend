@@ -28,8 +28,8 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'text' => 'required',
-            'post_id' => 'required',
+            'text' => 'required|string',
+            'post_id' => 'required|numeric',
         ]);
 
         $padlet = Post::findOrFail($request->post_id)->padlet;
@@ -64,7 +64,7 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'text' => 'required',
+            'text' => 'required|string',
         ]);
 
         $comment = Comment::findOrFail($id);
