@@ -16,7 +16,9 @@ return new class extends Migration
         Schema::create('posts', static function (Blueprint $table) {
             $table->id();
             $table->string('content')->nullable();
+            $table->string('title')->nullable();
             $table->string('cover')->nullable();
+            $table->string('color')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('padlet_id')->constrained('padlets')->onDelete('cascade');
             $table->timestamps();

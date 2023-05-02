@@ -35,7 +35,8 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'required|string',
+            'title' => 'required|string',
+            'content' => 'nullable|string',
             'padlet_id' => 'required|numeric',
             'cover' => 'nullable|string',
         ]);
@@ -48,6 +49,7 @@ class PostController extends Controller
         $post = new Post();
         $post->user_id = $userId;
         $post->padlet_id = $request->padlet_id;
+        $post->title = $request->title;
         $post->content = $request->content;
         $post->cover = $request->cover;
         $post->save();
@@ -76,7 +78,8 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string',
+            'title' => 'required|string',
+            'content' => 'nullable|string',
             'cover' => 'nullable|string',
             'public' => 'nullable|boolean',
         ]);

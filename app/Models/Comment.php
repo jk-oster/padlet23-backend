@@ -15,6 +15,8 @@ class Comment extends Model
         'post_id',
     ];
 
+    protected $appends = ['user_avatar'];
+
     public function post() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Post::class);
@@ -23,5 +25,10 @@ class Comment extends Model
     public function user() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getUserAvatarAttribute() : string
+    {
+        return $this->user->avatar ?? '';
     }
 }

@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'smdm-jakob',
                 'email' => 'jo@studiomitte.com',
-                'password' => bcrypt('2Nv3wmh8v^oVHh'),
+                'password' => bcrypt('smdm-jakob'),
                 'avatar' => 'https://i.pravatar.cc/150?u=1010118',
                 'role' => 'admin',
             ],

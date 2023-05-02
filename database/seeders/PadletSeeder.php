@@ -14,13 +14,13 @@ class PadletSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Padlet::factory(10)->create();
+        \App\Models\Padlet::factory(100)->create();
 
         \App\Models\Post::factory(10)->create();
 
-//        \App\Models\Rating::factory(10)->create();
+        \App\Models\Rating::factory(7)->create();
 
-        \App\Models\Comment::factory(10)->create();
+        \App\Models\Comment::factory(30)->create();
 
         // loop from 1 to 10 in a for
         for ($i = 1; $i < 10; $i++) {

@@ -17,7 +17,7 @@ class CommentFactory extends Factory
     public function definition()
     {
         return [
-            'text' => fake()->name(),
+            'text' => fake()->sentence(),
             'user_id' => fake()->randomDigitNotNull(),
             'post_id' => fake()->randomDigitNotNull(),
         ];

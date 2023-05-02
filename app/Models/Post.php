@@ -10,13 +10,15 @@ class Post extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'title',
         'content',
         'cover',
+        'color',
         'user_id',
         'padlet_id',
     ];
 
-    protected $appends = ['rating', 'ratings_count', 'comments_count', 'user_rating'];
+    protected $appends = ['rating'];
 
     /**
      * post belongs to one user (n:1)
@@ -60,31 +62,20 @@ class Post extends Model
         return $query->where('padlet_id', $padletId);
     }
 
-    public function getRatingAttribute() : int
+    public function getRatingAttribute() : array
     {
-        return $this->ratings()->sum('rating') ?? 0;
-    }
+        $ratings = $this->ratings();
+        $count = $ratings->count();
+        $totalRating = (int)($ratings->sum('rating') ?? 0);
+        $userId = \App\Models\User::getUserIdOrPublic();
+        $userRating = $ratings->where('user_id', $userId)->first();
 
-    public function getRatingsCountAttribute() : int
-    {
-        return $this->ratings()->count() ?? 0;
-    }
-
-    public function getCommentsCountAttribute() : int
-    {
-        return $this->comments()->count() ?? 0;
-    }
-
-    public function getUserRatingAttribute() : int
-    {
-        $user = auth()->user();
-        if ($user) {
-            $rating = $this->ratings()->where('user_id', $user->id)->first();
-            if ($rating) {
-                return $rating->rating;
-            }
-        }
-        return 0;
+        return [
+            'rating' =>  $totalRating,
+            'count' => $count ?? 0,
+            'user_rating' => $userRating->rating ?? 0,
+            'user_rating_id' => $userRating->id ?? 0,
+        ];
     }
 
 }

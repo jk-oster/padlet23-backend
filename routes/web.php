@@ -14,5 +14,24 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('padlet');
 });
+
+Route::get('/{any}', function ($any) {
+    if ($any === 'api' || Str::startsWith($any, 'api/')) {
+        // Get the routes defined in api.php
+        $routes = collect(Route::getRoutes())->filter(function ($route) {
+            return Str::startsWith($route->uri, 'api/');
+        })->map(function ($route) {
+            return [
+                'method' => $route->methods()[0],
+                'uri' => $route->uri,
+                'name' => $route->getName(),
+                'action' => $route->getActionName(),
+            ];
+        });
+        return view('api', ['routes' => $routes]);
+    } else {
+        return redirect('https://app.s2010456012.student.kwmhgb.at/');
+    }
+})->where('any', '^(?!api\/).*$');

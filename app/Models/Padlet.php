@@ -89,9 +89,10 @@ class Padlet extends Model
             }
 
             return $query
-                ->where('public', true)
-                ->orWhere('user_id', $user->id)
+                ->where('public', true) // public padlets
+                ->orWhere('user_id', $user->id) // user is owner
                 ->orWhereHas('padletUser', function ($query) use ($user) {
+                    // user is member and accepted invitation
                     $query->where('user_id', $user->id)->where('accepted', true);
                 });
         }

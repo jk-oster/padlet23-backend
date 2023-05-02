@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class RatingFactory extends Factory
 {
+
+    protected $post_id = 1;
+
     /**
      * Define the model's default state.
      *
@@ -17,9 +20,9 @@ class RatingFactory extends Factory
     public function definition()
     {
         return [
-            'rating' => fake()->randomDigitNotNull(),
-            'user_id' => fake()->randomDigitNotNull(),
-            'post_id' => fake()->randomDigitNotNull(),
+            'rating' => fake()->randomElement([1, -1]),
+            'user_id' => 1,
+            'post_id' => $this->post_id++,
         ];
     }
 }

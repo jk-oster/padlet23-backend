@@ -66,8 +66,9 @@ class RatingController extends Controller
         $padlet = $post->padlet;
         Gate::authorize('view', $padlet);
 //        Gate::authorize('edit-delete-rating', $padlet, $rating);
+        $userId = \App\Models\User::getUserIdOrPublic();
 
-        $rating->update(['rating' => $validated['rating']]);
+        $rating->update(['rating' => $validated['rating'], 'user_id' => $userId]);
 
         return response()->json($post, 200);
     }
@@ -78,9 +79,10 @@ class RatingController extends Controller
      * @param \App\Models\Rating $rating
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($postId): \Illuminate\Http\JsonResponse
+    public function destroy($ratingId): \Illuminate\Http\JsonResponse
     {
-        $rating = Rating::byPostId($postId)->first();
+        $rating = Rating::findOrFail($ratingId);
+//        $rating = Rating::byPostId($postId)->first();
         $post = $rating->post;
         $padlet = $post->padlet;
         Gate::authorize('view', $padlet);

@@ -20,20 +20,20 @@ use App\Http\Controllers\UnsplashController;
 |
 */
 
-Route::get('', static function (Request $request) {
-    return response()->json(['code' => 'seas']);
-});
+//Route::get('', static function (Request $request) {
+//    return response()->json(['code' => 'seas']);
+//});
 
 // Auth actions
 Route::post('auth/login', [AuthController::class, 'login']);
-Route::post('auth/logout', [AuthController::class, 'logout']);
+Route::post('auth/register', [AuthController::class, 'register']);
 
 // methods which need authentication - JWT Token
 Route::group(['middleware' => ['api', 'auth.jwt']], static function () {
     // Auth actions
+    Route::post('auth/logout', [AuthController::class, 'logout']);
     Route::get('auth/refresh', [AuthController::class, 'refresh']);
     Route::get('auth/me', [AuthController::class, 'me']);
-    Route::get('auth/register', [AuthController::class, 'register']);
 
     // User actions
     Route::get('search/user/{searchTerm}', [AuthController::class, 'search']);
@@ -53,7 +53,10 @@ Route::group(['middleware' => ['api', 'auth.jwt']], static function () {
     Route::delete('padlet-user/{id}', [PadletController::class, 'declinePadlet']);
 });
 // Unsplash image search
-Route::get('search/image/{searchTerm}', [UnsplashController::class, 'search']);
+Route::get('search/image/{searchTerm}', [\App\Http\Controllers\UnsplashController::class, 'search']);
+
+// Get metadata from url for preview component
+Route::get('metadata/{url}', [\App\Http\Controllers\MetatagController::class, 'getMetaData']);
 
 // Padlet actions
 Route::get('padlet', [PadletController::class, 'index']);
