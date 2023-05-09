@@ -20,7 +20,7 @@ class PadletController extends Controller
     {
         $user = auth()->user();
 
-        $publicPadlets = Padlet::accessiblePadlets($user)->with(['padletUser'])->get();
+        $publicPadlets = Padlet::accessiblePadlets($user)->with(['padletUser', 'user'])->get();
 
         return response()->json($publicPadlets, 200);
     }
