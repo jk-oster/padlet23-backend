@@ -34,7 +34,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string',
             'content' => 'nullable|string',
             'padlet_id' => 'required|numeric',
@@ -43,15 +43,15 @@ class PostController extends Controller
 
         $userId = \App\Models\User::getUserIdOrPublic();
 
-        $padlet = Padlet::findOrFail($request->padlet_id);
+        $padlet = Padlet::findOrFail($validated["padlet_id"]);
         Gate::authorize('edit', $padlet);
 
         $post = new Post();
         $post->user_id = $userId;
-        $post->padlet_id = $request->padlet_id;
-        $post->title = $request->title;
-        $post->content = $request->content;
-        $post->cover = $request->cover;
+        $post->padlet_id = $validated["padlet_id"];
+        $post->title = $validated["title"];
+        $post->content = $validated["content"];
+        $post->cover = $validated["cover"];
         $post->save();
 
         return response()->json($post, 201);
@@ -77,7 +77,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string',
             'content' => 'nullable|string',
             'cover' => 'nullable|string',
@@ -86,7 +86,7 @@ class PostController extends Controller
 
         $post = Post::findOrFail($id);
         Gate::authorize('edit', $post->padlet);
-        $post->update($request->all());
+        $post->update($validated);
         return response()->json($post, 200);
     }
 

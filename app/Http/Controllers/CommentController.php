@@ -27,20 +27,20 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'text' => 'required|string',
             'post_id' => 'required|numeric',
         ]);
 
-        $padlet = Post::findOrFail($request->post_id)->padlet;
+        $padlet = Post::findOrFail($validated['post_id'])->padlet;
         Gate::authorize('comment', $padlet);
 
         $userId = \App\Models\User::getUserIdOrPublic();
 
         $comment = new Comment();
-        $comment->text = $request->text;
+        $comment->text = $validated['text'];
         $comment->user_id = $userId;
-        $comment->post_id = $request->post_id;
+        $comment->post_id = $validated['post_id'];
         $comment->save();
         return response()->json($comment, 201);
     }

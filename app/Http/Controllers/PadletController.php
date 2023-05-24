@@ -117,7 +117,7 @@ class PadletController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string',
             'cover' => 'nullable|string',
             'public' => 'nullable|boolean',
@@ -126,14 +126,14 @@ class PadletController extends Controller
         $user = auth()->user();
         $userId = User::getUserIdOrPublic();
         if (!$user) {
-            $request->public = true;
+            $validated["public"] = true;
         }
 
         $padlet = Padlet::create([
-            'name' => $request->name,
-            'cover' => $request->cover,
+            'name' => $validated["name"],
+            'cover' => $validated["cover"],
             'user_id' => $userId,
-            'public' => $request->public ?? true,
+            'public' => $validated["public"] ?? true,
         ]);
 
         return response()->json($padlet, 201);
@@ -161,7 +161,7 @@ class PadletController extends Controller
     public function update(Request $request, $id)
     {
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string',
             'cover' => 'nullable|string',
             'public' => 'nullable|boolean',
@@ -169,7 +169,7 @@ class PadletController extends Controller
 
         $padlet = Padlet::findOrFail($id);
         Gate::authorize('admin', $padlet);
-        $padlet->update($request->all());
+        $padlet->update($validated);
         return response()->json($padlet, 200);
     }
 

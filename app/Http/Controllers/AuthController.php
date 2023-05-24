@@ -29,9 +29,12 @@ class AuthController extends Controller
             abort(403, 'Spam detected');
         }
 
+        $validated = $request->validate([
+            'email' => 'required|string|email|max:100',
+            'password' => 'required|string|confirmed',
+        ]);
 
-
-        $credentials = request(['email', 'password']);
+        $credentials = request($validated['email'], $validated['password']);
         $token = auth()->attempt($credentials);
         if (!$token) {
             return response()->json(['error' => 'Unauthorized'], 401);
